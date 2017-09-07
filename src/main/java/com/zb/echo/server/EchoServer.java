@@ -31,7 +31,7 @@ public class EchoServer {
         EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap serverBootstrap = new ServerBootstrap();
-            serverBootstrap
+            ChannelFuture future = serverBootstrap
                     .group(eventLoopGroup)
                     .channel(NioServerSocketChannel.class)
                     .localAddress(new InetSocketAddress(port))
@@ -39,8 +39,7 @@ public class EchoServer {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline().addLast(echoServerHandler);
                         }
-                    });
-            ChannelFuture future = serverBootstrap.bind().sync();
+                    }).bind().sync();
             future.channel().closeFuture().sync();
         } finally {
             eventLoopGroup.shutdownGracefully().sync();
